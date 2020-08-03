@@ -1,0 +1,4 @@
+1 - Remover Fator de correção - OK
+2 - Remover calibração e condição inicial - OK
+3 - Novo “array” de dispositivos: Quando eu troco o loadData.php para o novo array não funciona mais o grafico
+4 - “LoadData.php”  - código obsoleto: Não entendi muito bem onde colocar de onde vem a variavel "dados = “MTM4LzIzNS9B”
