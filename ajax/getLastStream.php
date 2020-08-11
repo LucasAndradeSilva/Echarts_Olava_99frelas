@@ -11,18 +11,18 @@ $idigi_auth = base64_encode($idigi_username . ":" . $idigi_password);
 
 //substr_replace($idigi_auth,"",-1);
 
-//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
-//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
+//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
+//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
 // parse the given URL     start_time=2019-10-16T00:01:00.000&end_time=2019-10-16T18:59:59.590&order=desc
 //echo date('His');   
-//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?size=5";
-//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?";
+//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?size=5";
+//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?";
 
 $dia_fim      = $_POST["dia_fim"];
 $hora_fim     = $_POST["hora_fim"];
 
 $dispositivos = $_POST['dispositivos'];
-// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0');
+// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!');
 $responseFinal = array('dispositivos'=>array());
 
 if ($dia_fim != "" || $hora_fim != ""){

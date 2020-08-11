@@ -19,62 +19,33 @@ $hora_fim = "23:59";
 
 $dataInicio = $dia_inicio . "T" . $hora_inicio;
 $dataFim = $dia_fim . "T" . $hora_fim;
-// $dispositivos = $_POST['dispositivos'];
+
 $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD0','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD3');
+//$dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!');
 $responseFinal = array('succao'=>'','corrente_eletrica'=>'','temperatura'=>'','descarga'=>'','dispositivos'=>array());
 
-// $retorno = data.split("/");
+//Variaveis da nova solicitação xbee.serialIn
+$P1;
+$P2;
+$P3;
+$P4;
 
-// $variavel1 = $retorno[0];
-// $variavel2 = $retorno[1];
-// $LETRA = $retorno[2];;
+$I1;
+$I2;
 
-// $P1;
-// $P2;
-// $P3;
-// $P4;
+$T1;
+$T2;
+$T3;
+$T4;
 
-// $I1;
-// $I2;
-
-// $T1;
-// $T2;
-// $T3;
-// $T4;
-
-// $V1;
-// $V2;
-// switch($LETRA)
-// {
-//     case "A":
-//         $P1 = $variável1;
-//         $P2 = $variável2;
-//         break;
-//     case "B":
-//         $P3 = $variável1;
-//         $P4 = $variável2;
-//         break;
-//     case "C":
-//         $I1 = $variável1;
-//         $I2 = $variável2;  
-//         break;
-//     case "D":
-//         $T1 = $variável1;
-//         $T2 = $variável2;
-//         break;
-//     case "E":
-//         $T3 = $variável1;
-//         $T4 = $variável2;
-//         break;
-//     case "F":
-//         $V1 = $variável1;
-//         $V2 = $variável2;
-//         break;
-// }
+$V1;
+$V2;
 
 
+$testeLucas = "";
 foreach ($dispositivos as $key => $value) {
   $curl = curl_init();
+  //$curl = curl_init("http://developer.idigi.com/ws/v1/streams/inventory//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:31:5D]!");
   curl_setopt_array($curl, array(
     CURLOPT_URL => "http://developer.idigi.com/ws/v1/streams/inventory/$value",
     CURLOPT_RETURNTRANSFER => true,
@@ -89,11 +60,72 @@ foreach ($dispositivos as $key => $value) {
       "Authorization: Basic " . $idigi_auth
   ));
 
-  $response = curl_exec($curl);
+  $response = curl_exec($curl);  
+  $err = curl_error($curl);
+  curl_close($curl);
+  
+  $response_array = json_decode($response,true);
+  
+  $curl = curl_init();
+ 
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => "http://developer.idigi.com/ws/v1/streams/inventory//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:31:5D]!",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 10,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "GET"
+  ));
+
+
+  curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+      "Authorization: Basic " . $idigi_auth
+  ));
+
+  $response2 = curl_exec($curl);  
   $err = curl_error($curl);
   curl_close($curl);
 
-  $response_array = json_decode($response,true);
+  $response_array2 = json_decode($response2,true);  
+      
+  $retorno = base64_decode($response_array2["value"]);
+
+  $retorno = preg_split("[/]",$retorno);
+
+  $testeLucas = $retorno;
+
+  $variavel1 = $retorno[0];
+  $variavel2 = $retorno[1];
+  $LETRA = $retorno[2];
+
+  switch($LETRA)
+  {
+      case "A":
+          $P1 = $variável1;
+          $P2 = $variável2;
+          break;
+      case "B":
+          $P3 = $variável1;
+          $P4 = $variável2;
+          break;
+      case "C":
+          $I1 = $variável1;
+          $I2 = $variável2;  
+          break;
+      case "D":
+          $T1 = $variável1;
+          $T2 = $variável2;
+          break;
+      case "E":
+          $T3 = $variável1;
+          $T4 = $variável2;
+          break;
+      case "F":
+          $V1 = $variável1;
+          $V2 = $variável2;
+          break;
+  }
 
   switch ($key) {
     case 0:
@@ -248,7 +280,9 @@ for ($x = 0; $x < 2; $x++) {
 }
 }
 
+ $responseFinal['dispositivos']['lucas'] = $testeLucas;
 echo json_encode($responseFinal);
+
 
 if (!$err) {
   // echo "Respota: " . $response . "\n";

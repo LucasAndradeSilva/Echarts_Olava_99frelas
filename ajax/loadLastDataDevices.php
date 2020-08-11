@@ -27,7 +27,7 @@ foreach ($dispositivos as $key => $val) {
   $type = $val['type'];
 
   $valueToApi = $value;
-  if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+  if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
     $valueToApi = substr_replace($value, "AD1", -3);
   }
 
@@ -79,7 +79,7 @@ foreach ($dispositivos as $key => $val) {
   if($type == "COP"){
     if(!$hasDescarga){
       $valueToApi = substr_replace($value, "AD2", -3);
-      if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+      if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
         $valueToApi = substr_replace($value, "AD1", -3);
       }
       $array = getLastValue($valueToApi);
@@ -98,7 +98,7 @@ foreach ($dispositivos as $key => $val) {
   if($type == "REND"){
     if(!$hasDescarga){
       $valueToApi = substr_replace($value, "AD2", -3);
-      if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+      if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
         $valueToApi = substr_replace($value, "AD1", -3);
       }
       $array = getLastValue($valueToApi);

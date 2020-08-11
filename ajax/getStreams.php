@@ -14,13 +14,13 @@ $idigi_auth = base64_encode($idigi_username . ":" . $idigi_password);
 // pressão de descarga: 00:13:A2:00:41:87:47:8C - AD2
 
 //dispositivo usado nos testes
-//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
+//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
 
 //substr_replace($idigi_auth,"",-1);
-//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
-//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
+//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
+//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
 //echo date('His');
-//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?size=5";
+//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?size=5";
 
 $dia_inicio     = $_POST["dia_inicio"];
 $hora_inicio    = $_POST["hora_inicio"];
@@ -52,7 +52,7 @@ if ($hora_fim == ""){
 $dataInicio = $dia_inicio . "T" . $hora_inicio;
 $dataFim = $dia_fim . "T" . $hora_fim;
 $dispositivos = $_POST['dispositivos'];
-// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0');
+// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!');
 $responseFinal = array('dispositivos'=>array());
 
 foreach ($dispositivos as $key => $value) {
@@ -85,7 +85,7 @@ foreach ($dispositivos as $key => $value) {
   $responseFinal['dispositivos'][$key]['list'] = $response_array->list;
 
   while($response_array->count == 1000){
-    $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?start_time=".$response_array->list[999]->timestamp."&end_time=$dataFim:59.590";
+    $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?start_time=".$response_array->list[999]->timestamp."&end_time=$dataFim:59.590";
     // echo $idigi_sci_url;
     // die();
 

@@ -148,7 +148,7 @@
           <div class="row">
 
             <!-- Area Chart -->
-            <div class="col-xl-8 col-lg-7">
+            <div class="col-xl-12 col-lg-7">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -196,7 +196,7 @@
             </div>
 
             <!-- Pie Chart -->
-            <div class="col-xl-4 col-lg-5">
+            <div class="col-xl-12 col-lg-5">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -210,10 +210,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Content Row -->
-          <div class="row">
 
             <!-- Pie Chart -->
             <div class="col-xl-8">
@@ -243,7 +239,13 @@
                   <img src="img/xbee.jpg" style="width: 100%; height: 100%">
                 </div>
               </div>
-            </div>                      
+            </div>   
+          </div>
+        
+          <!-- Content Row -->
+          <div class="row">
+
+                               
           </div>
 
         </div>
@@ -320,7 +322,7 @@
         },
         success: function( data )
         {
-          console.log(data)
+          console.log(data);
           try{
             clearInterval(handle);
             handle = 0;
@@ -382,6 +384,10 @@
                   bottom: 0
                 }
               },
+              dataZoom: [{
+                start: 0,
+                type: "inside"
+              }],
               scales: {
                 xAxes: [{
                   type: 'time',
@@ -457,7 +463,7 @@
         },
         success: function( data )
         {
-          console.log(data)
+          console.log(data);
           var json = data;
           for (var i = 0; i < json.dispositivos.length; i++) {
             myPieChart.data.datasets[i].data[myPieChart.data.datasets[i].data.length] = json.dispositivos[i];
@@ -478,9 +484,9 @@
         },
         success: function( data )
         {
-       console.log(data) 
+          console.log(data); 
   		var json = data;
-		myAmperagemChart.data.datasets[0].data[myAmperagemChart.data.datasets[0].data.length] = json.corrente_eletricaValue;
+		      myAmperagemChart.data.datasets[0].data[myAmperagemChart.data.datasets[0].data.length] = json.corrente_eletricaValue;
           myTemperaturaChart.data.datasets[0].data[myTemperaturaChart.data.datasets[0].data.length] = json.temperaturaValue;
 
           myAmperagemChart.update();
@@ -569,6 +575,10 @@
                   bottom: 0
                 }
               },
+              dataZoom: [{
+                start: 0,
+                type: "inside"
+              }],
               scales: {
                 xAxes: [{
                   type: 'time',
@@ -648,9 +658,7 @@
           json = data;
           console.log(json)
         }
-      });
-
-      
+      });      
     }
 
     window.onload = function() {

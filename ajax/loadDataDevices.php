@@ -17,13 +17,13 @@ $input = json_decode($input, TRUE);
 // pressão de descarga: 00:13:A2:00:41:87:47:8C - AD2
 
 //dispositivo usado nos testes
-//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
+//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
 
 //substr_replace($idigi_auth,"",-1);
-//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
-//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0
+//   ws/v1/streams/inventory/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
+//   ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!
 //echo date('His');
-//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?size=5";
+//$idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?size=5";
 
 // $time = strtotime("-1 year", time());
 $time = strtotime("-1 days", time());
@@ -36,7 +36,7 @@ $hora_fim = "23:59";
 $dataInicio = $dia_inicio . "T" . $hora_inicio;
 $dataFim = $dia_fim . "T" . $hora_fim;
 $dispositivos = $_POST['dispositivos'];
-// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD2','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD3');
+// $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!');
 $responseFinal = array('dispositivos'=>array());
 
 $hasDescarga = false;
@@ -54,7 +54,7 @@ foreach ($dispositivos as $key => $val) {
   $type = $val['type'];
 
   $valueToApi = $value;
-  if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+  if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
     $valueToApi = substr_replace($value, "AD1", -3);
   }
   // $value = explode("|", $val)[1];
@@ -167,7 +167,7 @@ foreach ($dispositivos as $key => $val) {
     if($type == "COP"){
       if(!$hasDescarga){
         $valueToApi = substr_replace($value, "AD2", -3);
-        if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+        if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
           $valueToApi = substr_replace($value, "AD1", -3);
         }
         $array = getList($valueToApi);
@@ -188,7 +188,7 @@ foreach ($dispositivos as $key => $val) {
     if($type == "REND"){
       if(!$hasDescarga){
         $valueToApi = substr_replace($value, "AD2", -3);
-        if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!/AD2"){
+        if($valueToApi == "00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!"){
           $valueToApi = substr_replace($value, "AD1", -3);
         }
         $array = getList($valueToApi);
@@ -313,7 +313,7 @@ function getList($device){
     curl_close($curl);
 
     $response_array = json_decode($response,true);
-    if($idigi_sci_url == "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0?start_time=2019-01-16T00:00:00.000&end_time=2020-01-16T23:59:59.590"){
+    if($idigi_sci_url == "http://developer.idigi.com/ws/v1/streams/history/00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!?start_time=2019-01-16T00:00:00.000&end_time=2020-01-16T23:59:59.590"){
       echo($response);
     }
 
