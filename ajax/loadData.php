@@ -8,10 +8,11 @@ $idigi_password = 'Garymu261990@';  // enter your password here. Consider your o
 $idigi_auth = base64_encode($idigi_username . ":" . $idigi_password);
 
 $getAllValues = $_POST['getAllValues'];
+$twoCompressores = $_POST['twoCompressores'];
 
 $time = strtotime("-7 days", time());
 $dia_inicio = date("Y-m-d", $time);
-// $dia_inicio = "2020-01-01";
+
 $hora_inicio = "00:00";
 
 $dia_fim = date('Y-m-d');
@@ -21,7 +22,7 @@ $dataInicio = $dia_inicio . "T" . $hora_inicio;
 $dataFim = $dia_fim . "T" . $hora_fim;
 
 $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD0','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD3');
-//$dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!');
+$dispositivosIn = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!');
 $responseFinal = array('succao'=>'','corrente_eletrica'=>'','temperatura'=>'','descarga'=>'','dispositivos'=>array());
 
 //Variaveis da nova solicitação xbee.serialIn
@@ -41,11 +42,10 @@ $T4;
 $V1;
 $V2;
 
-
 $testeLucas = "";
 foreach ($dispositivos as $key => $value) {
   $curl = curl_init();
-  //$curl = curl_init("http://developer.idigi.com/ws/v1/streams/inventory//00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:31:5D]!");
+ 
   curl_setopt_array($curl, array(
     CURLOPT_URL => "http://developer.idigi.com/ws/v1/streams/inventory/$value",
     CURLOPT_RETURNTRANSFER => true,
@@ -78,7 +78,6 @@ foreach ($dispositivos as $key => $value) {
     CURLOPT_CUSTOMREQUEST => "GET"
   ));
 
-
   curl_setopt($curl, CURLOPT_HTTPHEADER, array(
       "Authorization: Basic " . $idigi_auth
   ));
@@ -101,29 +100,33 @@ foreach ($dispositivos as $key => $value) {
 
   switch($LETRA)
   {
-      case "A":
-          $P1 = $variável1;
-          $P2 = $variável2;
+      case "A":     
+          $P1 = $variavel1;          
+          $P2 = $variavel2;
           break;
       case "B":
-          $P3 = $variável1;
-          $P4 = $variável2;
+          if($twoCompressores){
+            $P3 = $variavel1;
+            $P4 = $variavel2;
+          }
           break;
-      case "C":
-          $I1 = $variável1;
-          $I2 = $variável2;  
+      case "C":        
+          $I1 = $variavel1;
+          if($twoCompressores) $I2 = $variavel2;  
           break;
       case "D":
-          $T1 = $variável1;
-          $T2 = $variável2;
+          $T1 = $variavel1;
+          $T2 = $variavel2;
           break;
       case "E":
-          $T3 = $variável1;
-          $T4 = $variável2;
+          if($twoCompressores){
+            $T3 = $variavel1;
+            $T4 = $variavel2;
+          }
           break;
       case "F":
-          $V1 = $variável1;
-          $V2 = $variável2;
+          $V1 = $variavel1;
+          if($twoCompressores) $V2 = $variavel2;
           break;
   }
 
@@ -137,13 +140,11 @@ foreach ($dispositivos as $key => $value) {
       break;
 
     case 2:
-      $responseFinal['descarga'] = number_format(($response_array['value']) ,1,".","");
-      // $responseFinal['descarga'] = (0.000002 * pow($responseFinal['descarga'],3)) - (0.0016 * pow($responseFinal['descarga'],2)) + (0.6472 * $responseFinal['descarga']) - 35.567;
+      $responseFinal['descarga'] = number_format(($response_array['value']) ,1,".","");      
       break;
 
     case 3:
-      $responseFinal['succao'] = number_format(($response_array['value']),1,".","");
-      // $responseFinal['succao'] = (0.000002 * pow($responseFinal['succao'],3)) - (0.0016 * pow($responseFinal['succao'],2)) + (0.6473 * $responseFinal['succao']) - 35.567;
+      $responseFinal['succao'] = number_format(($response_array['value']),1,".","");      
       break;
     
     default:
@@ -176,7 +177,6 @@ if($getAllValues == "0"){
   $responseFinal['temperaturaValue'] = $response_array;
   $responseFinal['temperaturaValue']['value'] = number_format(($response_array['value']) ,1,".","");
   $responseFinal['temperaturaValue']['x'] = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['temperaturaValue']['timestamp']))); 
-
   $responseFinal['temperaturaValue']['y'] = $responseFinal['temperaturaValue']['value']; 
 
   $curl = curl_init();
@@ -202,46 +202,16 @@ if($getAllValues == "0"){
 
   $responseFinal['corrente_eletricaValue'] = $response_array;
   $responseFinal['corrente_eletricaValue']['value'] = number_format(($response_array['value']) ,1,".","");
-$responseFinal['corrente_eletricaValue']['x'] = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['corrente_eletricaValue']['timestamp']))); 
+  $responseFinal['corrente_eletricaValue']['x'] = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['corrente_eletricaValue']['timestamp']))); 
 
   $responseFinal['corrente_eletricaValue']['y'] = $responseFinal['corrente_eletricaValue']['value'];
 }
 
-
 if($getAllValues == "1"){
 // PEGAR APENAS O GRÁFICO TEMPERATURA E AMPERAGEM
-for ($x = 0; $x < 2; $x++) {
-  $value = $dispositivos[$x];
-  $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/$value?start_time=$dataInicio:00.000&end_time=$dataFim:59.590";
-
-  $curl = curl_init();
-  curl_setopt_array($curl, array(
-    CURLOPT_URL => $idigi_sci_url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => "",
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 60,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "GET"
-  ));
-
-  curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-      "Authorization: Basic " . $idigi_auth
-  ));
-
-  $response = curl_exec($curl);
-  $err = curl_error($curl);
-  curl_close($curl);
-
-  $response_array = json_decode($response);
-
-  $responseFinal['dispositivos'][$x]['dispositivo'] = $value;
-  $responseFinal['dispositivos'][$x]['list'] = $response_array->list;
-
-  while($response_array->count == 1000){
-    $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/$value?start_time=".$response_array->list[999]->timestamp."&end_time=$dataFim:59.590";
-    // echo $idigi_sci_url;
-    // die();
+  for ($x = 0; $x < 2; $x++) {
+    $value = $dispositivos[$x];
+    $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/$value?start_time=$dataInicio:00.000&end_time=$dataFim:59.590";
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
@@ -264,31 +234,59 @@ for ($x = 0; $x < 2; $x++) {
 
     $response_array = json_decode($response);
 
-    $responseFinal['dispositivos'][$x]['list'] = array_merge($responseFinal['dispositivos'][$x]['list'], $response_array->list);
-  }
+    $responseFinal['dispositivos'][$x]['dispositivo'] = $value;
+    $responseFinal['dispositivos'][$x]['list'] = $response_array->list;
 
-  for($y = 0; $y < count($responseFinal['dispositivos'][$x]['list']); $y++){
-    $responseFinal['dispositivos'][$x]['list'][$y]->x = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['dispositivos'][$x]['list'][$y]->timestamp))); 
-    if($x == 0){
-      $responseFinal['dispositivos'][$x]['list'][$y]->value = ($responseFinal['dispositivos'][$x]['list'][$y]->value);
+    while($response_array->count == 1000){
+      $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/$value?start_time=".$response_array->list[999]->timestamp."&end_time=$dataFim:59.590";
+  
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $idigi_sci_url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 60,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET"
+      ));
+
+      curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+          "Authorization: Basic " . $idigi_auth
+      ));
+
+      $response = curl_exec($curl);
+      $err = curl_error($curl);
+      curl_close($curl);
+
+      $response_array = json_decode($response);
+
+      $responseFinal['dispositivos'][$x]['list'] = array_merge($responseFinal['dispositivos'][$x]['list'], $response_array->list);
     }
-    else{
-      $responseFinal['dispositivos'][$x]['list'][$y]->value = ($responseFinal['dispositivos'][$x]['list'][$y]->value) ;
+
+    for($y = 0; $y < count($responseFinal['dispositivos'][$x]['list']); $y++){
+      $responseFinal['dispositivos'][$x]['list'][$y]->x = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['dispositivos'][$x]['list'][$y]->timestamp))); 
+      if($x == 0){
+        $responseFinal['dispositivos'][$x]['list'][$y]->value = ($responseFinal['dispositivos'][$x]['list'][$y]->value);
+      }
+      else{
+        $responseFinal['dispositivos'][$x]['list'][$y]->value = ($responseFinal['dispositivos'][$x]['list'][$y]->value) ;
+      }
+      $responseFinal['dispositivos'][$x]['list'][$y]->y = number_format($responseFinal['dispositivos'][$x]['list'][$y]->value,1,".","");
     }
-    $responseFinal['dispositivos'][$x]['list'][$y]->y = number_format($responseFinal['dispositivos'][$x]['list'][$y]->value,1,".","");
   }
 }
-}
 
- $responseFinal['dispositivos']['lucas'] = $testeLucas;
+//Calculos Graficos de Amperagem
+//Calculos Graficos de Temperatura
+
+$responseFinal['dispositivos']['lucas'] = $testeLucas;
 echo json_encode($responseFinal);
 
 
-if (!$err) {
-  // echo "Respota: " . $response . "\n";
+if (!$err) {  
   return "success";
-} else {
-  // echo "cURL Error #:" . $err;
+} else {  
 	return "error";
 }
 
