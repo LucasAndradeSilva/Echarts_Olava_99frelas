@@ -12,12 +12,12 @@
   <title>Xbee Life</title>
 
   <!-- Custom fonts for this template-->
-  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../css/sb-admin-2.min.css" rel="stylesheet">
-  <link href="../css/bootstrap-slider.css" rel="stylesheet">
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="css/bootstrap-slider.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
 
@@ -41,7 +41,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="../index.html">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon">
           <i class="fas fa-chart-line"></i>
         </div>
@@ -53,7 +53,7 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="../index.html">
+        <a class="nav-link" href="index.html">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span>
         </a>
@@ -61,37 +61,37 @@
       <hr class="sidebar-divider my-0"> 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse5D" aria-expanded="false" aria-controls="collapse5D">
-          <img src="../img/5d.png" width="50px"/>                    
+          <img src="img/5d.png" width="50px"/>                    
         </a>
         <div id="collapse5D" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded text-center">      
             <h6 class="collapse-header">Comporessores:</h6>      
-            <a class="collapse-item" href="5D.html">1 Comporessor</a>
-            <a class="collapse-item" href="two5D.html">2 Comporessores</a>
+            <a class="collapse-item" href="pages/5D.html">1 Comporessor</a>
+            <a class="collapse-item" href="pages/5D.html">2 Comporessores</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapse4F" aria-expanded="false" aria-controls="collapse4F">
-          <img src="../img/4f.png" width="50px"/>          
+          <img src="img/4f.png" width="50px"/>          
         </a>
         <div id="collapse4F" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded text-center">      
             <h6 class="collapse-header">Comporessores:</h6>      
-            <a class="collapse-item" href="4F.html">1 Comporessor</a>
-            <a class="collapse-item" href="two4F.html">2 Comporessores</a>
+            <a class="collapse-item" href="pages/4F.html">1 Comporessor</a>
+            <a class="collapse-item" href="pages/4F.html">2 Comporessores</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapse8C" aria-expanded="false" aria-controls="collapse8C">
-          <img src="../img/8c.png" width="50px"/>          
+          <img src="img/8c.png" width="50px"/>          
         </a>
         <div id="collapse8C" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded text-center">      
             <h6 class="collapse-header">Comporessores:</h6>      
-            <a class="collapse-item" href="8C.html">1 Comporessor</a>
-            <a class="collapse-item" href="two8C.html">2 Comporessores</a>
+            <a class="collapse-item" href="pages/8C.html">1 Comporessor</a>
+            <a class="collapse-item" href="pages/8C.html">2 Comporessores</a>
           </div>
         </div>        
       </li>
@@ -118,20 +118,12 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">8C</h1>
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
           </div>
 
           <!-- Content Row -->
           <div class="row">
-            <div class="col-xl-12">
-                <label>Selecione um Gás</label>
-                <select id='gases' class='form-control col-sm-12 mb-2' placeholder="Selecione um gás...">
-                    <option value='R22'>R22</option>
-                    <option value='R404A'>R404A</option>
-                    <option value='R402B'>R402B</option>
-                    <option value='R507'>R507</option>
-                </select>
-            </div>
+
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
@@ -199,7 +191,7 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Gráfico de Interpretação</h6>                 
-                  <button type='button' class='btn btn-primary mb-2 col-sm-0 float-right' id="btn-expandir"><img src="../img/expandir.png" width="25px"></img> Expandir</button>
+                  <button type='button' class='btn btn-primary mb-2 col-sm-0 float-right' id="btn-expandir"><img src="img/expandir.png" width="25px"></img> Expandir</button>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -283,7 +275,7 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <img src="../img/xbee.jpg" style="width: 100%; height: 100%">
+                  <img src="img/xbee.jpg" style="width: 100%; height: 100%">
                 </div>
               </div>
             </div>   
@@ -323,19 +315,19 @@
   </a>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="../vendor/jquery/jquery.min.js"></script>
-  <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="../js/sb-admin-2.min.js"></script>
-  <script src="../js/bootstrap-slider.js"></script>
+  <script src="js/sb-admin-2.min.js"></script>
+  <script src="js/bootstrap-slider.js"></script>
 
   <!-- Page level plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-  <script src="../vendor/chart.js/Chart.min.js"></script>
+  <script src="vendor/chart.js/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 
@@ -416,73 +408,67 @@
           var ctx = document.getElementById("grafico_principal");
           var color = Chart.helpers.color;
           var config = {
-            type: 'line',
-            data: {
-              labels: months.reverse(),
-              datasets: arrDatasets
-            },
-            options: {
-              maintainAspectRatio: false,
-              layout: {
-                padding: {
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0
-                }
-              },
-              dataZoom: [{
-                start: 0,
-                type: "inside"
-              }],
-              scales: {
-                xAxes: [{
-                  type: 'time',
-                  time: {
-                    parser: timeFormat,
-                    // round: 'day'
-                    tooltipFormat: 'll HH:mm'
-                  },
-                  scaleLabel: {
-                    display: true
-                  },
-                  gridLines: {
-                    display: false,
-                    drawBorder: false
-                  }
-                }],
-                yAxes: [{
-                  ticks: {
-                    maxTicksLimit: 5,
-                    padding: 10,
-                  },
-                  gridLines: {
-                    color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
-                    drawBorder: false,
-                    borderDash: [2],
-                    zeroLineBorderDash: [2]
-                  }
-                }],
-              },
-              legend: {
-                display: false
-              },
-              tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 0,
-                yPadding: 0,
-                displayColors: false,
-                intersect: false,
-                mode: 'index',
-                caretPadding: 10,
-              }
+            option = {
+                title: {
+                    text: '折线图堆叠'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '邮件营销',
+                        type: 'line',
+                        stack: '总量',
+                        data: [120, 132, 101, 134, 90, 230, 210]
+                    },
+                    {
+                        name: '联盟广告',
+                        type: 'line',
+                        stack: '总量',
+                        data: [220, 182, 191, 234, 290, 330, 310]
+                    },
+                    {
+                        name: '视频广告',
+                        type: 'line',
+                        stack: '总量',
+                        data: [150, 232, 201, 154, 190, 330, 410]
+                    },
+                    {
+                        name: '直接访问',
+                        type: 'line',
+                        stack: '总量',
+                        data: [320, 332, 301, 334, 390, 330, 320]
+                    },
+                    {
+                        name: '搜索引擎',
+                        type: 'line',
+                        stack: '总量',
+                        data: [820, 932, 901, 934, 1290, 1330, 1320]
+                    }
+                ]
             }
           };
           
@@ -557,9 +543,7 @@
         type: "POST",
         url: "ajax/loadData.php",
         data:{
-              "getAllValues": "1",
-              "twoCompressores": "false",
-              "gasSelencionado": $('#gases').val()
+          "getAllValues": "1"
         },
         success: function( data )
         {
@@ -713,8 +697,8 @@
     window.onload = function() {
       $("#modal").modal("show");
    
-      loadGraphics(true); 
-      loadCenterGraphic(true);
+    //   loadGraphics(true); 
+    //   loadCenterGraphic(true);
 
       $("#modal").modal("hide");
       $('body').removeClass('modal-open');

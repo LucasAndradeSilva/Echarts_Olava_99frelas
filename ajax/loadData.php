@@ -9,6 +9,7 @@ $idigi_auth = base64_encode($idigi_username . ":" . $idigi_password);
 
 $getAllValues = $_POST['getAllValues'];
 $twoCompressores = $_POST['twoCompressores'];
+$gasSelecionado = $_POST['gasSelencionado'];
 
 $time = strtotime("-7 days", time());
 $dia_inicio = date("Y-m-d", $time);
@@ -24,6 +25,9 @@ $dataFim = $dia_fim . "T" . $hora_fim;
 $dispositivos = array('00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD0','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD1','00000000-00000000-0004F3FF-FF157C77/xbee.analog/[00:13:A2:00:41:87:33:4F]!/AD3');
 $dispositivosIn = array('00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!','00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:33:4F]!');
 $responseFinal = array('succao'=>'','corrente_eletrica'=>'','temperatura'=>'','descarga'=>'','dispositivos'=>array());
+
+//Array de 2 compressores
+$responseTwoCompressores = array('temperatura_saturada1' => '', 'temperatura_saturada2' => '', 'entalpia_sucção1' => '', 'entalpia_sucção2' => '', 'entalpia_descarga1' => '', 'entalpia_descarga2' => '', 'PotElet1' => '', 'PotElet2' => '', 'COP1' => '', 'COP2' => '', 'dispositivos' => array());
 
 //Variaveis da nova solicitação xbee.serialIn
 $P1;
@@ -207,8 +211,82 @@ if($getAllValues == "0"){
   $responseFinal['corrente_eletricaValue']['y'] = $responseFinal['corrente_eletricaValue']['value'];
 }
 
-if($getAllValues == "1"){
-// PEGAR APENAS O GRÁFICO TEMPERATURA E AMPERAGEM
+if($getAllValues == "1"){  
+
+  //Switch do Gas Selecionado
+  switch ($gasSelecionado) {
+    case 'R22':
+      // Calculo com 1 compressor
+      $responseTwoCompressores['temperatura_saturada1'] = /*-4E-09 * */ pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0026 * pow(($P2), 2) + 0.7124 * $P2 - 34.757;
+      $responseTwoCompressores['entalpia_sucção1'] = /*-4E-09 * */ pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
+      $responseTwoCompressores['entalpia_descarga1'] = /*-2E-09 * */ pow(($P1), 4) + 3E-06 * pow(($P1), 3) - 0.0013 * pow(($P1), 2) + 0.3004 * ($P1) + 235.84;
+      $responseTwoCompressores['PotElet1'] = 3 * 220 * $I1 * 0.85;
+      $responseTwoCompressores['COP1'] = ($responseTwoCompressores['entalpia_sucção1'] - $responseTwoCompressores['entalpia_descarga1'] ) / $responseTwoCompressores['PotElet1'];
+    
+      // Calculo com 2 compressores
+      if ($twoCompressores) {    
+        $responseTwoCompressores['temperatura_saturada2'] = -4E-09 * pow(($P4), 4) + 5E-06 * pow(($P4), 3) - 0.0026 * pow(($P4), 2) + 0.7124 * $P4 - 34.757;
+        $responseTwoCompressores['entalpia_sucção2'] = -4E-09 * pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
+        $responseTwoCompressores['entalpia_descarga2'] = -2E-9 * pow(($P2), 4) + 3E-06 * pow(($P2), 3) - 0.0013 * pow(($P2) ,2) + 0.3004 * ($P2) + 235.84;
+        $responseTwoCompressores['PotElet2'] = 3 * 220 * $I2 * 0.85;
+        $responseTwoCompressores['COP2'] = ($responseTwoCompressores['entalpia_sucção2'] - $responseTwoCompressores['entalpia_descarga2'] ) / $responseTwoCompressores['PotElet2'];
+      }
+      break;
+    
+    case 'R404A':
+      // Calculo com 1 compressor
+      $responseTwoCompressores['temperatura_saturada1'] =  1;
+      $responseTwoCompressores['entalpia_sucção1'] = 1;
+      $responseTwoCompressores['entalpia_descarga1'] = 1;
+      $responseTwoCompressores['PotElet1'] = 1;
+      $responseTwoCompressores['COP1'] = 1;
+    
+      // Calculo com 2 compressores
+      if ($twoCompressores) {    
+        $responseTwoCompressores['temperatura_saturada2'] = 1;
+        $responseTwoCompressores['entalpia_sucção2'] = 1;
+        $responseTwoCompressores['entalpia_descarga2'] = 1;
+        $responseTwoCompressores['PotElet2'] = 1;
+        $responseTwoCompressores['COP2'] = 1;
+      }
+      break;   
+    case 'R402B':
+      // Calculo com 1 compressor
+      $responseTwoCompressores['temperatura_saturada1'] =  1;
+      $responseTwoCompressores['entalpia_sucção1'] = 1;
+      $responseTwoCompressores['entalpia_descarga1'] = 1;
+      $responseTwoCompressores['PotElet1'] = 1;
+      $responseTwoCompressores['COP1'] = 1;
+    
+      // Calculo com 2 compressores
+      if ($twoCompressores) {    
+        $responseTwoCompressores['temperatura_saturada2'] = 1;
+        $responseTwoCompressores['entalpia_sucção2'] = 1;
+        $responseTwoCompressores['entalpia_descarga2'] = 1;
+        $responseTwoCompressores['PotElet2'] = 1;
+        $responseTwoCompressores['COP2'] = 1;
+      }
+      break;  
+    case 'R507':
+      // Calculo com 1 compressor
+      $responseTwoCompressores['temperatura_saturada1'] =  1;
+      $responseTwoCompressores['entalpia_sucção1'] = 1;
+      $responseTwoCompressores['entalpia_descarga1'] = 1;
+      $responseTwoCompressores['PotElet1'] = 1;
+      $responseTwoCompressores['COP1'] = 1;
+    
+      // Calculo com 2 compressores
+      if ($twoCompressores) {    
+        $responseTwoCompressores['temperatura_saturada2'] = 1;
+        $responseTwoCompressores['entalpia_sucção2'] = 1;
+        $responseTwoCompressores['entalpia_descarga2'] = 1;
+        $responseTwoCompressores['PotElet2'] = 1;
+        $responseTwoCompressores['COP2'] = 1;
+      }
+      break;
+  }
+  
+  // PEGAR APENAS O GRÁFICO TEMPERATURA E AMPERAGEM
   for ($x = 0; $x < 2; $x++) {
     $value = $dispositivos[$x];
     $idigi_sci_url = "http://developer.idigi.com/ws/v1/streams/history/$value?start_time=$dataInicio:00.000&end_time=$dataFim:59.590";
@@ -278,6 +356,8 @@ if($getAllValues == "1"){
 }
 
 //Calculos Graficos de Amperagem
+
+
 //Calculos Graficos de Temperatura
 
 $responseFinal['dispositivos']['lucas'] = $testeLucas;
