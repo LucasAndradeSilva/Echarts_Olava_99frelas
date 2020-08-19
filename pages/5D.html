@@ -19,8 +19,6 @@
   <link href="../css/sb-admin-2.min.css" rel="stylesheet">
   <link href="../css/bootstrap-slider.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-
-
 </head>
 
 <body id="page-top">
@@ -234,7 +232,7 @@
                       <option value='descarga|00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:31:5D]!/AD2'>5D - Descarga</option>
                       <option value='succao|00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:31:5D]!/AD3'>5D - Sucção</option>
                     </select>
-                    <input type='button' class='btn btn-primary mb-2 col-sm-3 float-right' value='Atualizar' onclick='loadCenterGraphic(false)'>
+                    <input type='button' class='btn btn-primary mb-2 col-sm-3 float-right' value='Atualizar' onclick='loadGraphics(false)'>
                   </div>
                   <div class="chart-area">
                     <canvas id="grafico_principal"></canvas>
@@ -252,8 +250,8 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <div class="chart-pie pt-4">
-                    <canvas id="grafico_amperagem"></canvas>
+                  <div class="pt-4">
+                    <div id="grafico_amperagem" class="container" style="width:auto; height:300px;"></div>
                   </div>
                 </div>
               </div>
@@ -268,12 +266,13 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <div class="chart-pie-temperatura pt-4" style='height: 20rem;'>
-                    <canvas id="grafico_temperatura"></canvas>
+                  <div class="pt-4" style='height: 20rem; width: 100%;'>
+                    <!-- <canvas id="grafico_temperatura"></canvas> -->
+                    <div id="grafico_temperatura" class="container" style="width:700px; height:300px;"></div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div>        
 
             <!-- Pie Chart -->
             <div class="col-xl-4">
@@ -339,7 +338,7 @@
   <script src="../vendor/chart.js/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
-
+  <script src="../assets/js/echarts.js"></script>  
   <script type="text/javascript">
 
     var randomColorGenerator = function () { 
@@ -364,9 +363,11 @@
       // - Lucas Talves retirar esse capos a baixo
       jQuery.ajax({
         type: "POST",
-        url: "ajax/loadDataDevices.php",
+        url: "../ajax/loadDataDevices.php",
         data:{
-            "dispositivos": dispositivos
+            "dispositivos": dispositivos,
+            "twoCompressores": false,
+            "gasSelencionado": $('#gases').val()  
         },
         success: function( data )
         {
@@ -410,6 +411,7 @@
               pointHoverBackgroundColor: varRandomColorGenerator,
               pointHoverBorderColor: varRandomColorGenerator,
               data: json.dispositivos[i].list
+              //data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
             };
           }
 
@@ -505,9 +507,11 @@
 
       jQuery.ajax({
         type: "POST",
-        url: "ajax/loadLastDataDevices.php",
+        url: "../ajax/loadLastDataDevices.php",
         data:{
-            "dispositivos": dispositivos   
+            "dispositivos": dispositivos,
+            "twoCompressores": false,
+            "gasSelencionado": $('#gases').val()    
         },
         success: function( data )
         {
@@ -526,19 +530,21 @@
 
       jQuery.ajax({
         type: "POST",
-        url: "ajax/loadData.php",
+        url: "../ajax/loadData.php",
         data:{
-		      "getAllValues": "0"           
+		      "getAllValues": "0",
+          "twoCompressores": false,
+          "gasSelencionado": ""          
         },
         success: function( data )
         {
           console.log(data); 
   		    var json = data;
-		      myAmperagemChart.data.datasets[0].data[myAmperagemChart.data.datasets[0].data.length] = json.corrente_eletricaValue;
-          myTemperaturaChart.data.datasets[0].data[myTemperaturaChart.data.datasets[0].data.length] = json.temperaturaValue;
+		      // myAmperagemChart.data.datasets[0].data[myAmperagemChart.data.datasets[0].data.length] = json.corrente_eletricaValue;
+          // myTemperaturaChart.data.datasets[0].data[myTemperaturaChart.data.datasets[0].data.length] = json.temperaturaValue;
 
-          myAmperagemChart.update();
-          myTemperaturaChart.update();
+          // myAmperagemChart.update();
+          // myTemperaturaChart.update();
 
           $(".succao").text(json.succao)
           $(".descarga").text(json.descarga)
@@ -556,10 +562,10 @@
 
       jQuery.ajax({
         type: "POST",
-        url: "ajax/loadData.php",
+        url: "../ajax/loadData.php",
         data:{
               "getAllValues": "1",
-              "twoCompressores": "false",
+              "twoCompressores": false,
               "gasSelencionado": $('#gases').val()
         },
         success: function( data )
@@ -573,122 +579,125 @@
           var date = new Date();
           var months = [],
               monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-          for(var i = 0; i < 8; i++) {
-              // months.push(monthNames[date.getMonth()]);
-              months.push(moment(date).toDate());
+          for(var i = 0; i < 8; i++) {                     
+              months.push(moment(date).format("MMM DD LT"));
               date.setDate(date.getDate() - 1)
           }    
-
-          // var json = JSON.parse(data);
-
+        
+          //Preenche os campos do topo da Pagina
           $(".succao").text(json.succao)
           $(".descarga").text(json.descarga)
           $(".temperatura").text(json.temperatura)
           $(".corrente_eletrica").text(json.corrente_eletrica)
-
-          // Set new default font family and font color to mimic Bootstrap's default styling
+          
           Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
           Chart.defaults.global.defaultFontColor = '#858796';
 
-          // Pie Chart Example
-          var ctx = document.getElementById("grafico_amperagem");
-          var color = Chart.helpers.color;
-          var config = {
-            type: 'line',
-            data: {
-              labels: months.reverse(),
-              datasets: [{
-                label: 'Temperatura',
-                lineTension: 0.3,
-                backgroundColor: "rgba(78, 115, 223, 0.05)",
-                borderColor: "rgba(78, 115, 223, 1)",
-                pointRadius: 0,
-                pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointBorderColor: "rgba(78, 115, 223, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                fill: false,
-                data: json.dispositivos[1].list,
-                // data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
-              }]
-            },
-            options: {
-              maintainAspectRatio: false,
-              layout: {
-                padding: {
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0
-                }
-              },
-              dataZoom: [{
-                start: 0,
-                type: "inside"
-              }],
-              scales: {
-                xAxes: [{
-                  type: 'time',
-                  time: {
-                    parser: timeFormat,
-                    // round: 'day'
-                    tooltipFormat: 'll HH:mm'
-                  },
-                  scaleLabel: {
-                    display: true
-                  },
-                  gridLines: {
-                    display: false,
-                    drawBorder: false
-                  }
-                }],
-                yAxes: [{
-                  ticks: {
-                    maxTicksLimit: 5,
-                    padding: 10,
-                  },
-                  gridLines: {
-                    color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
-                    drawBorder: false,
-                    borderDash: [2],
-                    zeroLineBorderDash: [2]
-                  }
-                }],
+          //Configuração do Grafico de Temperatura          
+          var myChart = echarts.init(document.getElementById('grafico_temperatura'));
+
+          var option = {              
+              tooltip: {
+                  trigger: 'axis'
               },
               legend: {
-                display: false
+                  data: ['T1', 'T2', 'Temperatura_Saturada']
               },
-              tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 0,
-                yPadding: 0,
-                displayColors: false,
-                intersect: false,
-                mode: 'index',
-                caretPadding: 10,
-              }
-            }
+              grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+              },
+              toolbox: {
+                  feature: {
+                      saveAsImage: {}
+                  }
+              },                            
+              xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: months.reverse(), 
+              },            
+              yAxis: {
+                  type: 'value'
+              },             
+              dataZoom: [{
+                  type: 'inside'
+              }],
+              series: [
+                  {
+                      name: 'T1',
+                      type: 'line',
+                      stack: '总量',
+                      data: [120, 132, 101, 134, 90, 230, 210]
+                  },
+                  {
+                      name: 'T2',
+                      type: 'line',
+                      stack: '总量',
+                      data: [220, 182, 191, 234, 290, 330, 310]
+                  },          
+                  {
+                      name: 'Temperatura_Saturada',
+                      type: 'line',
+                      stack: '总量',
+                      data: [150, 232, 201, 154, 190, 330, 410]
+                  }         
+              ]
           };
+            
+          myChart.setOption(option);     
 
-           myAmperagemChart= new Chart(ctx, config);
+          //Configuração do Grafico de Amperagem          
+          var myChart = echarts.init(document.getElementById('grafico_amperagem'));
 
-          config.data.datasets[0].data = json.dispositivos[0].list
-          config.data.datasets[0].label = "Temperatura"
-          
-          var ctx = document.getElementById("grafico_temperatura");
-           myTemperaturaChart= new Chart(ctx, config);
+          var option = {              
+              tooltip: {
+                  trigger: 'axis'
+              },
+              legend: {
+                  data: ['I1']
+              },
+              grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+              },
+              toolbox: {
+                  feature: {
+                      saveAsImage: {}
+                  }
+              },                            
+              xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: months, 
+              },            
+              yAxis: {
+                  type: 'value'
+              },             
+              dataZoom: [{
+                  type: 'inside'
+              }],
+              series: [
+                  {
+                      name: 'I1',
+                      type: 'line',
+                      stack: '总量',
+                      data: [120, 132, 101, 134, 90, 230, 210]
+                  }       
+              ]
+          };
+            
+          myChart.setOption(option);                      
 
-		try{
+          // config.data.datasets[0].data = json.dispositivos[0].list
+          // config.data.datasets[0].label = "Temperatura"
+         
+
+		    try{
             if(handleValues == undefined){
               handleValues = setInterval(loadLastValues, 1000);
             }
@@ -714,6 +723,7 @@
     window.onload = function() {
       $("#modal").modal("show");
    
+      //teste_novo();
       loadGraphics(true); 
       loadCenterGraphic(true);
 
@@ -732,6 +742,7 @@
             $('.element').removeClass('ativo');
           }
     });
+     
   </script>
 
   <!-- Page level custom scripts -->

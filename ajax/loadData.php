@@ -30,21 +30,21 @@ $responseFinal = array('succao'=>'','corrente_eletrica'=>'','temperatura'=>'','d
 $responseTwoCompressores = array('temperatura_saturada1' => '', 'temperatura_saturada2' => '', 'entalpia_sucção1' => '', 'entalpia_sucção2' => '', 'entalpia_descarga1' => '', 'entalpia_descarga2' => '', 'PotElet1' => '', 'PotElet2' => '', 'COP1' => '', 'COP2' => '', 'dispositivos' => array());
 
 //Variaveis da nova solicitação xbee.serialIn
-$P1;
-$P2;
-$P3;
-$P4;
+$P1=0;
+$P2=0;
+$P3=0;
+$P4=0;
 
-$I1;
-$I2;
+$I1=0;
+$I2=0;
 
-$T1;
-$T2;
-$T3;
-$T4;
+$T1=0;
+$T2=0;
+$T3=0;
+$T4=0;
 
-$V1;
-$V2;
+$V1=0;
+$V2=0;
 
 $testeLucas = "";
 foreach ($dispositivos as $key => $value) {
@@ -207,7 +207,6 @@ if($getAllValues == "0"){
   $responseFinal['corrente_eletricaValue'] = $response_array;
   $responseFinal['corrente_eletricaValue']['value'] = number_format(($response_array['value']) ,1,".","");
   $responseFinal['corrente_eletricaValue']['x'] = date('m/d/Y H:i', strtotime('-0 hours', strtotime($responseFinal['corrente_eletricaValue']['timestamp']))); 
-
   $responseFinal['corrente_eletricaValue']['y'] = $responseFinal['corrente_eletricaValue']['value'];
 }
 
@@ -217,19 +216,19 @@ if($getAllValues == "1"){
   switch ($gasSelecionado) {
     case 'R22':
       // Calculo com 1 compressor
-      $responseTwoCompressores['temperatura_saturada1'] = /*-4E-09 * */ pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0026 * pow(($P2), 2) + 0.7124 * $P2 - 34.757;
-      $responseTwoCompressores['entalpia_sucção1'] = /*-4E-09 * */ pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
-      $responseTwoCompressores['entalpia_descarga1'] = /*-2E-09 * */ pow(($P1), 4) + 3E-06 * pow(($P1), 3) - 0.0013 * pow(($P1), 2) + 0.3004 * ($P1) + 235.84;
+      $responseTwoCompressores['temperatura_saturada1'] = pow(-4,-9) * pow(($P2), 4) + pow(5,-6) * pow(($P2), 3) - 0.0026 * pow(($P2), 2) + 0.7124 * $P2 - 34.757;
+      $responseTwoCompressores['entalpia_sucção1'] = -pow(-4,-9) * pow(($P2), 4) + pow(5,-6) * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
+      $responseTwoCompressores['entalpia_descarga1'] = pow(-2,-9) * pow(($P1), 4) + pow(3,-6) * pow(($P1), 3) - 0.0013 * pow(($P1), 2) + 0.3004 * ($P1) + 235.84;
       $responseTwoCompressores['PotElet1'] = 3 * 220 * $I1 * 0.85;
-      $responseTwoCompressores['COP1'] = ($responseTwoCompressores['entalpia_sucção1'] - $responseTwoCompressores['entalpia_descarga1'] ) / $responseTwoCompressores['PotElet1'];
+      //$responseTwoCompressores['COP1'] = ($responseTwoCompressores['entalpia_sucção1'] - $responseTwoCompressores['entalpia_descarga1'] ) / $responseTwoCompressores['PotElet1'];
     
       // Calculo com 2 compressores
-      if ($twoCompressores) {    
-        $responseTwoCompressores['temperatura_saturada2'] = -4E-09 * pow(($P4), 4) + 5E-06 * pow(($P4), 3) - 0.0026 * pow(($P4), 2) + 0.7124 * $P4 - 34.757;
-        $responseTwoCompressores['entalpia_sucção2'] = -4E-09 * pow(($P2), 4) + 5E-06 * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
-        $responseTwoCompressores['entalpia_descarga2'] = -2E-9 * pow(($P2), 4) + 3E-06 * pow(($P2), 3) - 0.0013 * pow(($P2) ,2) + 0.3004 * ($P2) + 235.84;
+      if ($twoCompressores != "false") {    
+        $responseTwoCompressores['temperatura_saturada2'] = pow(-4,-9) * pow(($P4), 4) + pow(5,-6) * pow(($P4), 3) - 0.0026 * pow(($P4), 2) + 0.7124 * $P4 - 34.757;
+        $responseTwoCompressores['entalpia_sucção2'] = pow(-4,-9) * pow(($P2), 4) + pow(5,-6) * pow(($P2), 3) - 0.0027 * pow(($P2), 2) + 0.7965 * ($P2) + 5.2636;
+        $responseTwoCompressores['entalpia_descarga2'] = pow(-2,-9) * pow(($P2), 4) + pow(3,-6) * pow(($P2), 3) - 0.0013 * pow(($P2) ,2) + 0.3004 * ($P2) + 235.84;
         $responseTwoCompressores['PotElet2'] = 3 * 220 * $I2 * 0.85;
-        $responseTwoCompressores['COP2'] = ($responseTwoCompressores['entalpia_sucção2'] - $responseTwoCompressores['entalpia_descarga2'] ) / $responseTwoCompressores['PotElet2'];
+        //$responseTwoCompressores['COP2'] = ($responseTwoCompressores['entalpia_sucção2'] - $responseTwoCompressores['entalpia_descarga2'] ) / $responseTwoCompressores['PotElet2'];
       }
       break;
     
@@ -242,7 +241,7 @@ if($getAllValues == "1"){
       $responseTwoCompressores['COP1'] = 1;
     
       // Calculo com 2 compressores
-      if ($twoCompressores) {    
+      if ($twoCompressores != "false") {   
         $responseTwoCompressores['temperatura_saturada2'] = 1;
         $responseTwoCompressores['entalpia_sucção2'] = 1;
         $responseTwoCompressores['entalpia_descarga2'] = 1;
@@ -259,7 +258,7 @@ if($getAllValues == "1"){
       $responseTwoCompressores['COP1'] = 1;
     
       // Calculo com 2 compressores
-      if ($twoCompressores) {    
+      if ($twoCompressores != "false") {   
         $responseTwoCompressores['temperatura_saturada2'] = 1;
         $responseTwoCompressores['entalpia_sucção2'] = 1;
         $responseTwoCompressores['entalpia_descarga2'] = 1;
@@ -276,7 +275,7 @@ if($getAllValues == "1"){
       $responseTwoCompressores['COP1'] = 1;
     
       // Calculo com 2 compressores
-      if ($twoCompressores) {    
+      if ($twoCompressores != "false") { 
         $responseTwoCompressores['temperatura_saturada2'] = 1;
         $responseTwoCompressores['entalpia_sucção2'] = 1;
         $responseTwoCompressores['entalpia_descarga2'] = 1;
@@ -360,7 +359,9 @@ if($getAllValues == "1"){
 
 //Calculos Graficos de Temperatura
 
-$responseFinal['dispositivos']['lucas'] = $testeLucas;
+$responseFinal['dispositivos']['lucas'] = $responseTwoCompressores;
+$responseFinal['dispositivos']['gas'] = $gasSelecionado;
+$responseFinal['dispositivos']['doisCompressores'] = $twoCompressores;
 echo json_encode($responseFinal);
 
 
