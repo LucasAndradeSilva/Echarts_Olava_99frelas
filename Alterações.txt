@@ -1,0 +1,33 @@
+
+*Novas alterações*
+
+
+*Pronto*
+- Remover Fator de correção - *OK*
+- Remover calibração e condição inicial - *OK*
+- Novo Array colocar com o "/AD0" - *OK*
+- Encontrar de onde vem os dados e adicionar o switch case - *OK*
+- Refazer o Layout - *OK*
+- Novas listar de opções do grafico Dashbord - *OK*
+- fazer um if para validar cada opção - *OK*
+- Opção de Zoom - *OK*
+- No Graficos de Interpretação colocar os novos parametros - *OK*
+
+*Ainda falta*
+- Quando colocar 2 dispositivos exibir na tela inicial as pressão 1 e 2 
+- Atualizar todas as paginas com dados que vem do dispositvo
+- Array dos novos dispositivos para simular valores 
+- Comentar Código
+- Remover botão Atualizar
+- Expandir Grafico 
+- Adicionar no mongo db os dados convertidos do grafico de entopia
+
+
+
+
+
+- Retirar o Looping e deixar só o dispositivo escolhido
+- Colocar o grafico em 7 dias 
+- Colocar o grafico principal em 24h e funcionamdo
+- Deixar o graficos atualizando de maneira paralela
+- No grafico principal o usuario pode escolher quais valores exibir
