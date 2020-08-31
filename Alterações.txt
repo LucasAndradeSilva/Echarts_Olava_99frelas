@@ -14,19 +14,13 @@
 - No Graficos de Interpretação colocar os novos parametros - *OK*
 
 *Ainda falta*
-- Quando colocar 2 dispositivos exibir na tela inicial as pressão 1 e 2 
 - Atualizar todas as paginas com dados que vem do dispositvo
-- Array dos novos dispositivos para simular valores 
-- Comentar Código
-- Remover botão Atualizar
+- Comentar Código - *OK*
 - Expandir Grafico 
 - Adicionar no mongo db os dados convertidos do grafico de entopia
 
 
-
-
-
-- Retirar o Looping e deixar só o dispositivo escolhido
+- Retirar o Looping e deixar só o dispositivo escolhido  - *OK*
 - Colocar o grafico em 7 dias 
 - Colocar o grafico principal em 24h e funcionamdo
 - Deixar o graficos atualizando de maneira paralela

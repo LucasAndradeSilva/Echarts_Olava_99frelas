@@ -204,14 +204,22 @@
                 <div class="card-body">
                   <div>
                     <select id='dispositivos' class='selectpicker form-control col-sm-9 mb-2' data-actions-box="true" data-placeholder="Selecione os dispositivos..." multiple data-live-search="true" title="Escolha os dispositivos...">
-                      <option value='AD0|00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD0'>8C - AD0 - Temp</option>
-                      <option value='AD1|00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD1'>8C - AD1 - Corrente</option>
-                      <option value='AD2|00000000-00000000-0004F3FF-FF157C77/xbee.serialIn/[00:13:A2:00:41:87:47:8C]!/AD2'>8C - AD2 - Pressão Sucção</option>                   
+                      <option value='P1'>P1</option>                      
+                      <option value='P2'>P2</option>                                                             
+                      <option value='T1'>T1</option>                      
+                      <option value='T2'>T2</option>                                            
+                      <option value='I1'>I1</option>                      
+                      <option value='V1'>V1</option>                      
+                      <option value='TS1'>Temperatura Saturada 1</option>                      
+                      <option value='ES1'>Entalpia Sucção1</option>                      
+                      <option value='ED1'>Entalpia Descarga1</option>                      
+                      <option value='PE1'>PotElet1</option>
+                      <option value='COP1'>COP1</option>                      
                     </select>
                     <input type='button' class='btn btn-primary mb-2 col-sm-3 float-right' value='Atualizar' onclick='loadGraphics(false)'>
                   </div>
                   <div class="chart-area">
-                    <canvas id="grafico_principal"></canvas>
+                    <div id="grafico_principal" class="container" style="width:auto; height:300px;"></div>                    
                   </div>
                 </div>
               </div>
@@ -242,8 +250,7 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <div class="pt-4" style='height: 20rem; width: 100%;'>
-                    <!-- <canvas id="grafico_temperatura"></canvas> -->
+                  <div class="pt-4" style='height: 20rem; width: 100%;'>                    
                     <div id="grafico_temperatura" class="container" style="width:700px; height:300px;"></div>
                   </div>
                 </div>
@@ -314,7 +321,11 @@
   <script src="../vendor/chart.js/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
+  <!-- Echarts -->
   <script src="../assets/js/echarts.js"></script>  
+
+  <!-- MongoDB -->
+  <script src="../node/app.js"></script>
   <script type="text/javascript">
 
     var randomColorGenerator = function () { 
@@ -343,7 +354,8 @@
         data:{
             "dispositivos": dispositivos,
             "twoCompressores": false,
-            "gasSelencionado": $('#gases').val()  
+            "gasSelencionado": $('#gases').val(),
+            "dispositivo" : "5D"  
         },
         success: function( data )
         {
@@ -487,7 +499,8 @@
         data:{
             "dispositivos": dispositivos,
             "twoCompressores": false,
-            "gasSelencionado": $('#gases').val()    
+            "gasSelencionado": $('#gases').val(),
+            "dispositivo" : "5D"   
         },
         success: function( data )
         {
@@ -510,22 +523,25 @@
         data:{
 		      "getAllValues": "1",
           "twoCompressores": false,
-          "gasSelencionado": $('#gases').val()
+          "gasSelencionado": $('#gases').val(),
+          "dispositivo" : "5D"
         },
         success: function( data )
         {
-          console.log(data);           
+          console.log(data);          
           var json = data;     
           
           //Atualiza Grafico Temperatura
           setGraficoTemperatura(json);
           //Atualiza Grafico Amperagem
           setGraficoAmperagem(json);
-                      		     
-          $(".succao").text(json.succao)
-          $(".descarga").text(json.descarga)
-          $(".temperatura").text(json.temperatura)
-          $(".corrente_eletrica").text(json.corrente_eletrica)
+          //Atualiza Grafico Interpretação
+          setGraficoInterpretacao(json);
+                                      
+          if(json.P2 != 0) $(".succao").text(json.P2);
+          if(json.P1 != 0) $(".descarga").text(json.P1);
+          if(json.T1 != 0) $(".temperatura").text(json.T1);
+          if(json.I1 != 0) $(".corrente_eletrica").text(json.I1);
         }
       });
     }
@@ -542,12 +558,12 @@
         data:{
               "getAllValues": "1",
               "twoCompressores": false,
-              "gasSelencionado": $('#gases').val()
+              "gasSelencionado": $('#gases').val(),
+              "dispositivo" : "5D"
         },
         success: function( data )
-        {
-          json = data;
-          console.log(json.dispositivos.dispositivosIn.temperatura_saturada1);
+        {          
+          json = data;          
           var timeFormat = 'MM/DD/YYYY HH:mm';
           $(".chart-pie").html("").html('<canvas id="grafico_amperagem"></canvas>')
           $(".chart-pie-temperatura").html("").html('<canvas id="grafico_temperatura"></canvas>')
@@ -557,14 +573,15 @@
               monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
           for(var i = 0; i < 8; i++) {                     
               months.push(moment(date).format("MMM DD LT"));
-              date.setDate(date.getDate() - 1)
+              date.setDate(date.getDate() - 1);              
           }    
         
+          months.reverse();
           //Preenche os campos do topo da Pagina
-          $(".succao").text(json.succao)
-          $(".descarga").text(json.descarga)
-          $(".temperatura").text(json.temperatura)
-          $(".corrente_eletrica").text(json.corrente_eletrica)
+          if(json.P2 != 0) $(".succao").text(json.P2);
+          if(json.P1 != 0) $(".descarga").text(json.P1);
+          if(json.T1 != 0) $(".temperatura").text(json.T1);
+          if(json.I1 != 0) $(".corrente_eletrica").text(json.I1);
           
           Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
           Chart.defaults.global.defaultFontColor = '#858796';
@@ -603,17 +620,17 @@
                   {
                       name: 'T1',
                       type: 'line',                      
-                      data: [0]
+                      data: [json.T1]
                   },
                   {
                       name: 'T2',
                       type: 'line',                      
-                      data: [0]
+                      data: [json.T2]
                   },
                   {
                       name: 'Temperatura Saturada1',
                       type: 'line',                      
-                      data: [0]
+                      data: [json.TemperaturaSaturada1]
                   }       
               ]
           };
@@ -656,15 +673,55 @@
                   {
                       name: 'I1',
                       type: 'line',                      
-                      data: [0]
+                      data: [json.I1]
                   }       
               ]
           };
-            
+                     
           chartAmperagem.setOption(option);                      
           var chartLastDataAmperagem = chartAmperagem.getOption();           
           lastDataAmperagem.push(chartLastDataAmperagem.series[0]); 
 
+          //Configuração do Grafico de Interpretacao                    
+          var option = {              
+              tooltip: {
+                  trigger: 'axis'
+              },              
+              grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+              },
+              toolbox: {
+                  feature: {
+                      saveAsImage: {}
+                  }
+              },                            
+              xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: months, 
+              },            
+              yAxis: {
+                  type: 'value'
+              },             
+              dataZoom: [{
+                  type: 'inside'
+              }],
+              series: [
+                  {
+                      name: 'I1',
+                      type: 'line',                      
+                      data: [json.I1]
+                  }       
+              ]
+          };
+
+          chartInterpretacao.setOption(option);                      
+          var chartLastDataInterpretacao = chartInterpretacao.getOption();           
+          lastDataAmperagem.push(chartLastDataInterpretacao.series[0]); 
+            
 		    try{
             if(handleValues == undefined){
               handleValues = setInterval(loadLastValues, 1000);
@@ -713,38 +770,44 @@
 
     var chartAmperagem = echarts.init(document.getElementById('grafico_amperagem'));
     var chartTemperatura = echarts.init(document.getElementById('grafico_temperatura'));
+    var chartInterpretacao = echarts.init(document.getElementById('grafico_principal'));
     var lastDataTemperatura = [];
     var lastDataAmperagem = [];
+    var lastDataInterpretacao = [];
     var dados = [];
     var dados2 = [];
     var i = 0;
     function setGraficoTemperatura(json) {                                              
-          lastDataTemperatura[0][0].data.push(json.temperatura);          
-          lastDataTemperatura[0][1].data.push(json.dispositivos.dispositivosIn.temperatura_saturada1);
-          dados.push(i++);
-          var optionTemperatura = { 
-            xAxis: {                  
-                  data: dados
-            },         
-            series: [
-                  {                                            
-                      data: lastDataTemperatura[0][0].data
-                  },
-                  {                                            
-                      data: lastDataTemperatura[0][1].data
-                  }         
-              ]
-          };
+        if(json.T1 != 0) lastDataTemperatura[0][0].data.push(json.T1);          
+        if(json.T2 != 0) lastDataTemperatura[0][1].data.push(json.T2);
+        if(json.TemperaturaSaturada1 != 0) lastDataTemperatura[0][2].data.push(json.TemperaturaSaturada1);
+        if(json.T1 != 0 || json.T2 != 0 || (json.TemperaturaSaturada1 != 0)) dados.push(i++);                         
+            var optionTemperatura = { 
+              xAxis: {                  
+                    data: dados
+              },         
+              series: [
+                    {                                            
+                        data: lastDataTemperatura[0][0].data
+                    },
+                    {                                            
+                        data: lastDataTemperatura[0][1].data
+                    },                  
+                    {                                            
+                        data: lastDataTemperatura[0][2].data
+                    }          
+                ]
+            };
 
-        chartTemperatura.setOption(optionTemperatura);
-    }
+          chartTemperatura.setOption(optionTemperatura);
+   }
 
     function setGraficoAmperagem(json) {                                                    
-      lastDataAmperagem[0].data.push(json.corrente_eletrica);                
-      dados.push(i++);
+      if(json.I1 != 0) lastDataAmperagem[0].data.push(json.I1);                
+      if(json.I1 != 0) dados2.push(i++);
       var optionAmperagem = { 
         xAxis: {                  
-              data: dados
+              data: dados2
         },         
         series: [
               {                                            
@@ -754,6 +817,22 @@
       };
 
       chartAmperagem.setOption(optionAmperagem);
+    }
+
+    function setGraficoInterpretacao(json) {                                                    
+      if(json.I1 != 0)  lastDataAmperagem[0].data.push(json.I1);                
+      if(json.I1 != 0) dados2.push(i++);
+      var optionAmperagem = { 
+        xAxis: {                  
+              data: dados2
+        },         
+        series: [
+              {                                            
+                  data: lastDataAmperagem[0].data
+              }        
+          ]
+      };      
+      chartInterpretacao.setOption(optionAmperagem);
     }
     
         $('#btn-expandir').click(function() {
