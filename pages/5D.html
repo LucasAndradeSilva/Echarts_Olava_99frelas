@@ -324,8 +324,7 @@
   <!-- Echarts -->
   <script src="../assets/js/echarts.js"></script>  
 
-  <!-- MongoDB -->
-  <script src="../node/app.js"></script>
+  <!-- MongoDB -->  
   <script type="text/javascript">
 
     var randomColorGenerator = function () { 
@@ -514,21 +513,27 @@
         }
       });
     }
-
+    
+    //Atualiza os graficos todas requisições são feitas aqui
     function loadLastValues(){
 
       jQuery.ajax({
         type: "POST",
         url: "../ajax/loadData.php",
-        data:{
-		      "getAllValues": "1",
+        data:{		      
           "twoCompressores": false,
           "gasSelencionado": $('#gases').val(),
           "dispositivo" : "5D"
         },
         success: function( data )
         {
-          console.log(data);          
+          console.log(data);
+          dispositivos = new Array();
+          var dispositivosSelected = $("#dispositivos").val();
+          dispositivosSelected.forEach(function(valor){
+            dispositivos.push(valor);
+          });  
+            
           var json = data;     
           
           //Atualiza Grafico Temperatura
@@ -536,7 +541,7 @@
           //Atualiza Grafico Amperagem
           setGraficoAmperagem(json);
           //Atualiza Grafico Interpretação
-          setGraficoInterpretacao(json);
+          setGraficoInterpretacao(json, dispositivos);
                                       
           if(json.P2 != 0) $(".succao").text(json.P2);
           if(json.P1 != 0) $(".descarga").text(json.P1);
@@ -546,6 +551,7 @@
       });
     }
 
+    //Carrega os Graficos
     function loadGraphics(alreadyLoadedModal){
 
       if(!alreadyLoadedModal){
@@ -720,7 +726,7 @@
 
           chartInterpretacao.setOption(option);                      
           var chartLastDataInterpretacao = chartInterpretacao.getOption();           
-          lastDataAmperagem.push(chartLastDataInterpretacao.series[0]); 
+          lastDataInterpretacao.push(chartLastDataInterpretacao.series[0]); 
             
 		    try{
             if(handleValues == undefined){
@@ -745,10 +751,10 @@
       });      
     }
 
+    //Função chamada assim que o site é carregado
     window.onload = function() {
       $("#modal").modal("show");
-   
-      //teste_novo();
+         
       loadGraphics(true); 
       loadCenterGraphic(true);
 
@@ -757,26 +763,11 @@
       $('.modal-backdrop').remove();
     }
 
-    $('#btn-expandir').click(function name() {
-      if (!$('.element').hasClass('ativo')) {            
-            $('.element').css('transform','scale(4)');
-            $('.element').addClass('ativo');
-          }
-          else{
-            $('.element').css('transform','none');
-            $('.element').removeClass('ativo');
-          }
-    });
-
-    var chartAmperagem = echarts.init(document.getElementById('grafico_amperagem'));
-    var chartTemperatura = echarts.init(document.getElementById('grafico_temperatura'));
-    var chartInterpretacao = echarts.init(document.getElementById('grafico_principal'));
-    var lastDataTemperatura = [];
-    var lastDataAmperagem = [];
-    var lastDataInterpretacao = [];
-    var dados = [];
-    var dados2 = [];
+    //Atualiza Grafico de Temperatura
     var i = 0;
+    var dados = [];
+    var chartTemperatura = echarts.init(document.getElementById('grafico_temperatura'));
+    var lastDataTemperatura = [];
     function setGraficoTemperatura(json) {                                              
         if(json.T1 != 0) lastDataTemperatura[0][0].data.push(json.T1);          
         if(json.T2 != 0) lastDataTemperatura[0][1].data.push(json.T2);
@@ -802,6 +793,10 @@
           chartTemperatura.setOption(optionTemperatura);
    }
 
+   //Atualiza Grafico de Amperagem
+    var dados2 = [];
+    var lastDataAmperagem = [];  
+    var chartAmperagem = echarts.init(document.getElementById('grafico_amperagem'));
     function setGraficoAmperagem(json) {                                                    
       if(json.I1 != 0) lastDataAmperagem[0].data.push(json.I1);                
       if(json.I1 != 0) dados2.push(i++);
@@ -819,32 +814,60 @@
       chartAmperagem.setOption(optionAmperagem);
     }
 
-    function setGraficoInterpretacao(json) {                                                    
-      if(json.I1 != 0)  lastDataAmperagem[0].data.push(json.I1);                
-      if(json.I1 != 0) dados2.push(i++);
-      var optionAmperagem = { 
+    //Atualiza Grafico de Interpretcação
+    var lastDataInterpretacao = [];
+    var chartInterpretacao = echarts.init(document.getElementById('grafico_principal'));
+    function setGraficoInterpretacao(json, dispositivos) {                                                                
+      var newSeries = [];      
+      if (dispositivos != "") {  
+        for (let index = 0; index < lastDataInterpretacao.length; index++) {
+           var result = dispositivos.find(x => x == lastDataInterpretacao[i].name);      
+           if(result == undefined){
+              lastDataInterpretacao.splice(list.indexOf(lastDataInterpretacao[i].name), 1);
+            }         
+        }
+        
+       for (let index = 0; index < dispositivos.length; index++) {
+         var exist = false;
+          for (let i = 0; i < lastDataInterpretacao.length; i++) {
+             if (lastDataInterpretacao[index].name == dispositivos[i]) {
+                 exist = true;
+                 i = lastDataInterpretacao.length;
+                 lastDataInterpretacao[index].data.push(parseInt(json[dispositivos[i]]));
+             }           
+          }
+          if (!exist) {
+              var serie = {
+                name: value,
+                data: [parseInt(json[dispositivos[i]])]
+              }
+              newSeries.push(serie);
+          }
+       }      
+      }
+      //lastDataInterpretacao.push(newSeries);
+      var optionInterpretacao = { 
         xAxis: {                  
               data: dados2
         },         
-        series: [
-              {                                            
-                  data: lastDataAmperagem[0].data
-              }        
-          ]
-      };      
-      chartInterpretacao.setOption(optionAmperagem);
+        series: newSeries
+      };
+      console.log(lastDataInterpretacao);
+      
+      chartInterpretacao.setOption(optionInterpretacao);
     }
     
-        $('#btn-expandir').click(function() {
-          if (!$('.element').hasClass('ativo')) {            
-            $('.element').css('transform','scale(4)');
-            $('.element').addClass('ativo');
-          }
-          else{
-            $('.element').css('transform','none');
-            $('.element').removeClass('ativo');
-          }
-        });
+    //Função que expande Grafico 
+      $('#btn-expandir').click(function() {             
+        if (!$('.element').hasClass('ativo')) {            
+          $('.element').css('transform','scale(4)');
+          $('.element').addClass('ativo');
+        }
+        else{
+          $('.element').css('transform','none');
+          $('.element').removeClass('ativo');
+        }
+      });
     
      
   </script>

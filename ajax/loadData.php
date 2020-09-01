@@ -40,7 +40,6 @@ $idigi_username = 'olavor';  // enter your username here.
 $idigi_password = 'Garymu261990@';  // enter your password here. Consider your options for securing this info.
 $idigi_auth = base64_encode($idigi_username . ":" . $idigi_password);
 
-$getAllValues = $_POST['getAllValues'];
 $twoCompressores = $_POST['twoCompressores'];
 $gasSelecionado = $_POST['gasSelencionado'];
 $dispositivoSelecionado = $_POST['dispositivo'];
