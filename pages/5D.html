@@ -210,10 +210,10 @@
                       <option value='T2'>T2</option>                                            
                       <option value='I1'>I1</option>                      
                       <option value='V1'>V1</option>                      
-                      <option value='TS1'>Temperatura Saturada 1</option>                      
-                      <option value='ES1'>Entalpia Sucção1</option>                      
-                      <option value='ED1'>Entalpia Descarga1</option>                      
-                      <option value='PE1'>PotElet1</option>
+                      <option value='TemperaturaSaturada1'>Temperatura Saturada 1</option>                      
+                      <option value='EntalpiaSuccao1'>Entalpia Sucção1</option>                      
+                      <option value='EntalpiaDescarga1'>Entalpia Descarga1</option>                      
+                      <option value='PotElet1'>PotElet1</option>
                       <option value='COP1'>COP1</option>                      
                     </select>
                     <input type='button' class='btn btn-primary mb-2 col-sm-3 float-right' value='Atualizar' onclick='loadGraphics(false)'>
@@ -817,42 +817,54 @@
     //Atualiza Grafico de Interpretcação
     var lastDataInterpretacao = [];
     var chartInterpretacao = echarts.init(document.getElementById('grafico_principal'));
-    function setGraficoInterpretacao(json, dispositivos) {                                                                
-      var newSeries = [];      
+    function setGraficoInterpretacao(json, dispositivos) {                                                                      
+      var newSeries = [];    
+      var legenda = [];  
       if (dispositivos != "") {  
-        for (let index = 0; index < lastDataInterpretacao.length; index++) {
+        for (let i = 0; i < lastDataInterpretacao.length; i++) {
            var result = dispositivos.find(x => x == lastDataInterpretacao[i].name);      
            if(result == undefined){
-              lastDataInterpretacao.splice(list.indexOf(lastDataInterpretacao[i].name), 1);
+              lastDataInterpretacao.splice(lastDataInterpretacao.indexOf(lastDataInterpretacao[i].name), 1);
             }         
         }
         
        for (let index = 0; index < dispositivos.length; index++) {
          var exist = false;
           for (let i = 0; i < lastDataInterpretacao.length; i++) {
-             if (lastDataInterpretacao[index].name == dispositivos[i]) {
+             if (lastDataInterpretacao[i].name == dispositivos[index]) {
                  exist = true;
+                 lastDataInterpretacao[i].data.push(parseInt(json[dispositivos[index]]));
                  i = lastDataInterpretacao.length;
-                 lastDataInterpretacao[index].data.push(parseInt(json[dispositivos[i]]));
              }           
           }
           if (!exist) {
               var serie = {
-                name: value,
-                data: [parseInt(json[dispositivos[i]])]
-              }
-              newSeries.push(serie);
+                name: dispositivos[index],
+                data: [parseInt(json[dispositivos[index]])],
+                type: 'line'
+              }              
+              lastDataInterpretacao.push(serie);
+
+              legenda = [];
+              $(lastDataInterpretacao).each(function (key, value) {
+                legenda.push(value.name);
+              });
           }
        }      
-      }
-      //lastDataInterpretacao.push(newSeries);
+      }      
+
+      console.log(legenda);
+      console.log(lastDataInterpretacao);
+      
       var optionInterpretacao = { 
         xAxis: {                  
-              data: dados2
+          data: dados2
         },         
-        series: newSeries
+        legend: {
+          data: legenda
+        },
+        series: lastDataInterpretacao                  
       };
-      console.log(lastDataInterpretacao);
       
       chartInterpretacao.setOption(optionInterpretacao);
     }
